@@ -51,5 +51,8 @@ Not found.
 ## Implementation
 Not found.
 
+# Additonal stuff
+http://www.inside-r.org/packages/cran/qcc/docs/qcc.overdispersion.test
+
 # References
 
