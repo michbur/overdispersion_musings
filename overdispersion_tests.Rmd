@@ -1,0 +1,55 @@
+---
+title: "Overdispersion tests"
+author: "Michal Burdukiewicz"
+date: "9. September 2015"
+output: 
+  html_document:
+    toc: true
+bibliography: overdispersion.bib
+---
+
+Abbrevations:  
+* BM - binomial model  
+* DM - dispersed model  
+* PM - Poisson model  
+* NM - non-dispersed model  
+* QBM - quasibinomial model  
+* QPM - quasi-Poisson model  
+
+
+# Likelihood ratio test for over-dispersion in count data
+
+Compute likelihood ratio for null hypothesis:
+
+$$
+H_0: \mu = \sigma^2 
+$$
+
+If rejected, negative binomial distribution is assumed. But negative binomial distribution is not equivalent to quasi-Poisson distribution (real distribution vs quasi-distribution). For more empirical comparison see @ver_hoef_quasi-poisson_2007
+
+## Implementation
+[odTest in package pscl](http://www.inside-r.org/packages/cran/pscl/docs/odTest)
+
+# Regression-based tests for overdispersion in the Poisson model
+
+@cameron_regression-based_1990
+
+## Implementation
+[dispersiontest  in package AER](http://artax.karlin.mff.cuni.cz/r-help/library/AER/html/dispersiontest.html)
+
+# An extension of an over-dispersion test for count data
+
+@baksh_extension_2011
+
+## Implementation
+Not found.
+
+# A Test for Quasi-Binomial Distribution
+
+@fazal_test_1976
+
+## Implementation
+Not found.
+
+# References
+
