@@ -39,7 +39,7 @@ If rejected, negative binomial distribution is assumed. But negative binomial di
 
 # An extension of an over-dispersion test for count data
 
-@baksh_extension_2011
+Test for 0-truncated data (unknown number of 0 counts) [@baksh_extension_2011].
 
 ## Implementation
 Not found.
@@ -53,6 +53,14 @@ Not found.
 
 # Additonal stuff
 http://www.inside-r.org/packages/cran/qcc/docs/qcc.overdispersion.test
+
+# Bohning's test for overdispersion of Poisson data
+
+
+
+## Implementation
+http://rpackages.ianhowson.com/cran/epiR/man/epi.bohning.html
+
 
 # References
 
