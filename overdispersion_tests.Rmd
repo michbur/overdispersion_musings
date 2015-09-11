@@ -14,12 +14,31 @@ Abbrevations:
 * PM - Poisson model  
 * NM - non-dispersed model  
 * QBM - quasibinomial model  
-* QPM - quasi-Poisson model    
-* ZIP - zero-inflated Poisson (distribution)  
+* QPM - quasi-Poisson model   
+* ZDP - zero-deflated Poisson (distribution)   
+* ZIP - zero-inflated Poisson (distribution)    
+* ZTP - zero-truncated Poisson (distribution)   
 
 # Theoretical introduction  
 
-Zero-inflated distribution: 
+## COM distribution (both ZIP and ZDP)
+
+See in @shmueli_useful_2005.
+
+COM can be both under- and overdispersed.
+
+$$
+P(X = k) = \frac{\lambda^k}{(k!)^\nu Z}
+$$
+
+If $\nu = 1$, it is normal Poisson distribution. Overdispersed when $0 < \nu < 1$ and underdispersed when $\nu > 1$.    
+Disadvantage: $\nu$ is quite hard to interpret.
+
+Implemented in the package [compoisson](https://cran.r-project.org/web/packages/compoisson/index.html).
+
+
+
+## Zero-inflated distribution 
 $$
 P\{X = K\} = \begin{cases}
 (1 - p) + p \exp^{-\lambda},\text{if } k = 0\\
@@ -27,6 +46,19 @@ p \frac{\lambda^k \exp^{-\lambda}}{k!},\text{if } k = 1, 2, \ldots
 \end{cases}
 $$
 as in @wang_comparison_2012.
+
+Mean:
+$$
+\mu = p \lambda
+$$
+
+Variance:
+$$
+\mu = p \lambda + p(1 - p)\lambda^2
+$$
+
+So when p=1, we have Poisson distribution.
+
 
 # Publications
 

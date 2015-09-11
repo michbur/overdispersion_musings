@@ -76,7 +76,10 @@ img {
 
 <div id="TOC">
 <ul>
-<li><a href="#theoretical-introduction">Theoretical introduction</a></li>
+<li><a href="#theoretical-introduction">Theoretical introduction</a><ul>
+<li><a href="#com-distribution-both-zip-and-zdp">COM distribution (both ZIP and ZDP)</a></li>
+<li><a href="#zero-inflated-distribution">Zero-inflated distribution</a></li>
+</ul></li>
 <li><a href="#publications">Publications</a><ul>
 <li><a href="#likelihood-ratio-test-for-over-dispersion-in-count-data">Likelihood ratio test for over-dispersion in count data</a><ul>
 <li><a href="#implementation">Implementation</a></li>
@@ -106,15 +109,37 @@ img {
 * NM - non-dispersed model<br />
 * QBM - quasibinomial model<br />
 * QPM - quasi-Poisson model<br />
-* ZIP - zero-inflated Poisson (distribution)</p>
+* ZDP - zero-deflated Poisson (distribution)<br />
+* ZIP - zero-inflated Poisson (distribution)<br />
+* ZTP - zero-truncated Poisson (distribution)</p>
 <div id="theoretical-introduction" class="section level1">
 <h1>Theoretical introduction</h1>
-<p>Zero-inflated distribution: <span class="math display">\[
+<div id="com-distribution-both-zip-and-zdp" class="section level2">
+<h2>COM distribution (both ZIP and ZDP)</h2>
+<p>See in <span class="citation">Shmueli et al. (2005)</span>.</p>
+<p>COM can be both under- and overdispersed.</p>
+<p><span class="math display">\[
+P(X = k) = \frac{\lambda^k}{(k!)^\nu Z}
+\]</span></p>
+<p>If <span class="math inline">\(\nu = 1\)</span>, it is normal Poisson distribution. Overdispersed when <span class="math inline">\(0 &lt; \nu &lt; 1\)</span> and underdispersed when <span class="math inline">\(\nu &gt; 1\)</span>.</p>
+<p>Implemented in the package <a href="https://cran.r-project.org/web/packages/compoisson/index.html">compoisson</a>.</p>
+</div>
+<div id="zero-inflated-distribution" class="section level2">
+<h2>Zero-inflated distribution</h2>
+<p><span class="math display">\[
 P\{X = K\} = \begin{cases}
 (1 - p) + p \exp^{-\lambda},\text{if } k = 0\\
 p \frac{\lambda^k \exp^{-\lambda}}{k!},\text{if } k = 1, 2, \ldots
 \end{cases}
 \]</span> as in <span class="citation">Wang et al. (2012)</span>.</p>
+<p>Mean: <span class="math display">\[
+\mu = p \lambda
+\]</span></p>
+<p>Variance: <span class="math display">\[
+\mu = p \lambda + p(1 - p)\lambda^2
+\]</span></p>
+<p>So when p=1, we have Poisson distribution.</p>
+</div>
 </div>
 <div id="publications" class="section level1">
 <h1>Publications</h1>
@@ -175,6 +200,9 @@ H_0: \mu = \sigma^2
 </div>
 <div id="ref-fazal_test_1976">
 <p>Fazal, Sadrudin S. 1976. “A Test for Quasi-Binomial Distribution.” <em>Biometrische Zeitschrift</em> 18 (8): 619–22. <a href="http://doi.org/10.1002/bimj.19760180804">doi:10.1002/bimj.19760180804</a>.</p>
+</div>
+<div id="ref-shmueli_useful_2005">
+<p>Shmueli, Galit, Thomas P. Minka, Joseph B. Kadane, Sharad Borle, and Peter Boatwright. 2005. “A Useful Distribution for Fitting Discrete Data: Revival of the Conway–Maxwell–Poisson Distribution.” <em>Journal of the Royal Statistical Society: Series C (Applied Statistics)</em> 54 (1): 127–42. <a href="http://doi.org/10.1111/j.1467-9876.2005.00474.x">doi:10.1111/j.1467-9876.2005.00474.x</a>.</p>
 </div>
 <div id="ref-ver_hoef_quasi-poisson_2007">
 <p>Ver Hoef, Jay M., and Peter L. Boveng. 2007. “Quasi-Poisson Vs. Negative Binomial Regression: How Should We Model Overdispersed Count Data?” <em>Ecology</em> 88 (11): 2766–72.</p>
