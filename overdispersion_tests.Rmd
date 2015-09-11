@@ -14,10 +14,23 @@ Abbrevations:
 * PM - Poisson model  
 * NM - non-dispersed model  
 * QBM - quasibinomial model  
-* QPM - quasi-Poisson model  
+* QPM - quasi-Poisson model    
+* ZIP - zero-inflated Poisson (distribution)  
 
+# Theoretical introduction  
 
-# Likelihood ratio test for over-dispersion in count data
+Zero-inflated distribution: 
+$$
+P\{X = K\} = \begin{cases}
+(1 - p) + p \exp^{-\lambda},\text{if } k = 0\\
+p \frac{\lambda^k \exp^{-\lambda}}{k!},\text{if } k = 1, 2, \ldots
+\end{cases}
+$$
+as in @wang_comparison_2012.
+
+# Publications
+
+## Likelihood ratio test for over-dispersion in count data
 
 Compute likelihood ratio for null hypothesis:
 
@@ -27,40 +40,39 @@ $$
 
 If rejected, negative binomial distribution is assumed. But negative binomial distribution is not equivalent to quasi-Poisson distribution (real distribution vs quasi-distribution). For more empirical comparison see @ver_hoef_quasi-poisson_2007
 
-## Implementation
+### Implementation
 [odTest in package pscl](http://www.inside-r.org/packages/cran/pscl/docs/odTest)
 
-# Regression-based tests for overdispersion in the Poisson model
+## Regression-based tests for overdispersion in the Poisson model
 
 @cameron_regression-based_1990
 
-## Implementation
+### Implementation
 [dispersiontest  in package AER](http://artax.karlin.mff.cuni.cz/r-help/library/AER/html/dispersiontest.html)
 
-# An extension of an over-dispersion test for count data
+## An extension of an over-dispersion test for count data
 
 Test for 0-truncated data (unknown number of 0 counts) [@baksh_extension_2011].
 
-## Implementation
+### Implementation
 Not found.
 
-# A Test for Quasi-Binomial Distribution
+## A Test for Quasi-Binomial Distribution
 
 @fazal_test_1976
 
-## Implementation
+### Implementation
 Not found.
 
-# Additonal stuff
+## Additonal stuff
 http://www.inside-r.org/packages/cran/qcc/docs/qcc.overdispersion.test
 
-# Bohning's test for overdispersion of Poisson data
+## Bohning's test for overdispersion of Poisson data
 
 
 
-## Implementation
+### Implementation
 http://rpackages.ianhowson.com/cran/epiR/man/epi.bohning.html
 
-
-# References
+## References
 

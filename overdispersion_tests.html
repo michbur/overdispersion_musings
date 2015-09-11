@@ -76,6 +76,8 @@ img {
 
 <div id="TOC">
 <ul>
+<li><a href="#theoretical-introduction">Theoretical introduction</a></li>
+<li><a href="#publications">Publications</a><ul>
 <li><a href="#likelihood-ratio-test-for-over-dispersion-in-count-data">Likelihood ratio test for over-dispersion in count data</a><ul>
 <li><a href="#implementation">Implementation</a></li>
 </ul></li>
@@ -93,6 +95,7 @@ img {
 <li><a href="#implementation-4">Implementation</a></li>
 </ul></li>
 <li><a href="#references">References</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -102,56 +105,68 @@ img {
 * PM - Poisson model<br />
 * NM - non-dispersed model<br />
 * QBM - quasibinomial model<br />
-* QPM - quasi-Poisson model</p>
-<div id="likelihood-ratio-test-for-over-dispersion-in-count-data" class="section level1">
-<h1>Likelihood ratio test for over-dispersion in count data</h1>
+* QPM - quasi-Poisson model<br />
+* ZIP - zero-inflated Poisson (distribution)</p>
+<div id="theoretical-introduction" class="section level1">
+<h1>Theoretical introduction</h1>
+<p>Zero-inflated distribution: <span class="math display">\[
+P\{X = K\} = \begin{cases}
+(1 - p) + p \exp^{-\lambda},\text{if } k = 0\\
+p \frac{\lambda^k \exp^{-\lambda}}{k!},\text{if } k = 1, 2, \ldots
+\end{cases}
+\]</span> as in <span class="citation">Wang et al. (2012)</span>.</p>
+</div>
+<div id="publications" class="section level1">
+<h1>Publications</h1>
+<div id="likelihood-ratio-test-for-over-dispersion-in-count-data" class="section level2">
+<h2>Likelihood ratio test for over-dispersion in count data</h2>
 <p>Compute likelihood ratio for null hypothesis:</p>
 <p><span class="math display">\[
 H_0: \mu = \sigma^2 
 \]</span></p>
 <p>If rejected, negative binomial distribution is assumed. But negative binomial distribution is not equivalent to quasi-Poisson distribution (real distribution vs quasi-distribution). For more empirical comparison see <span class="citation">Ver Hoef and Boveng (2007)</span></p>
-<div id="implementation" class="section level2">
-<h2>Implementation</h2>
+<div id="implementation" class="section level3">
+<h3>Implementation</h3>
 <p><a href="http://www.inside-r.org/packages/cran/pscl/docs/odTest">odTest in package pscl</a></p>
 </div>
 </div>
-<div id="regression-based-tests-for-overdispersion-in-the-poisson-model" class="section level1">
-<h1>Regression-based tests for overdispersion in the Poisson model</h1>
+<div id="regression-based-tests-for-overdispersion-in-the-poisson-model" class="section level2">
+<h2>Regression-based tests for overdispersion in the Poisson model</h2>
 <p><span class="citation">Cameron and Trivedi (1990)</span></p>
-<div id="implementation-1" class="section level2">
-<h2>Implementation</h2>
+<div id="implementation-1" class="section level3">
+<h3>Implementation</h3>
 <p><a href="http://artax.karlin.mff.cuni.cz/r-help/library/AER/html/dispersiontest.html">dispersiontest in package AER</a></p>
 </div>
 </div>
-<div id="an-extension-of-an-over-dispersion-test-for-count-data" class="section level1">
-<h1>An extension of an over-dispersion test for count data</h1>
+<div id="an-extension-of-an-over-dispersion-test-for-count-data" class="section level2">
+<h2>An extension of an over-dispersion test for count data</h2>
 <p>Test for 0-truncated data (unknown number of 0 counts) <span class="citation">(Baksh, Böhning, and Lerdsuwansri 2011)</span>.</p>
-<div id="implementation-2" class="section level2">
-<h2>Implementation</h2>
+<div id="implementation-2" class="section level3">
+<h3>Implementation</h3>
 <p>Not found.</p>
 </div>
 </div>
-<div id="a-test-for-quasi-binomial-distribution" class="section level1">
-<h1>A Test for Quasi-Binomial Distribution</h1>
+<div id="a-test-for-quasi-binomial-distribution" class="section level2">
+<h2>A Test for Quasi-Binomial Distribution</h2>
 <p><span class="citation">Fazal (1976)</span></p>
-<div id="implementation-3" class="section level2">
-<h2>Implementation</h2>
+<div id="implementation-3" class="section level3">
+<h3>Implementation</h3>
 <p>Not found.</p>
 </div>
 </div>
-<div id="additonal-stuff" class="section level1">
-<h1>Additonal stuff</h1>
+<div id="additonal-stuff" class="section level2">
+<h2>Additonal stuff</h2>
 <p><a href="http://www.inside-r.org/packages/cran/qcc/docs/qcc.overdispersion.test" class="uri">http://www.inside-r.org/packages/cran/qcc/docs/qcc.overdispersion.test</a></p>
 </div>
-<div id="bohnings-test-for-overdispersion-of-poisson-data" class="section level1">
-<h1>Bohning’s test for overdispersion of Poisson data</h1>
-<div id="implementation-4" class="section level2">
-<h2>Implementation</h2>
+<div id="bohnings-test-for-overdispersion-of-poisson-data" class="section level2">
+<h2>Bohning’s test for overdispersion of Poisson data</h2>
+<div id="implementation-4" class="section level3">
+<h3>Implementation</h3>
 <p><a href="http://rpackages.ianhowson.com/cran/epiR/man/epi.bohning.html" class="uri">http://rpackages.ianhowson.com/cran/epiR/man/epi.bohning.html</a></p>
 </div>
 </div>
-<div id="references" class="section level1 references unnumbered">
-<h1>References</h1>
+<div id="references" class="section level2 references unnumbered">
+<h2>References</h2>
 <div id="ref-baksh_extension_2011">
 <p>Baksh, M. Fazil, Dankmar Böhning, and Rattana Lerdsuwansri. 2011. “An Extension of an over-Dispersion Test for Count Data.” <em>Computational Statistics &amp; Data Analysis</em> 55 (1): 466–74. <a href="http://doi.org/10.1016/j.csda.2010.05.015">doi:10.1016/j.csda.2010.05.015</a>.</p>
 </div>
@@ -163,6 +178,10 @@ H_0: \mu = \sigma^2
 </div>
 <div id="ref-ver_hoef_quasi-poisson_2007">
 <p>Ver Hoef, Jay M., and Peter L. Boveng. 2007. “Quasi-Poisson Vs. Negative Binomial Regression: How Should We Model Overdispersed Count Data?” <em>Ecology</em> 88 (11): 2766–72.</p>
+</div>
+<div id="ref-wang_comparison_2012">
+<p>Wang, Hongyue, Changyong Feng, Xinming Tu, and Jeanne Kowalski. 2012. “A Comparison of Two Test Statistics for Poisson Overdispersion/Underdispersion.” <em>Applied Mathematics</em> 03 (07): 795–99. <a href="http://doi.org/10.4236/am.2012.37118">doi:10.4236/am.2012.37118</a>.</p>
+</div>
 </div>
 </div>
 
