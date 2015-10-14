@@ -28,3 +28,17 @@ mdf_dens <- compare_dens(lambdas = c(0.01, 0.1, 0.5, 1, 2),
 ggplot(mdf_dens, aes(x = quant, y = value, fill = p)) +
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~ lambda, nrow = 1)
+
+
+#probability function from Wang 2012
+#p overdispersed/underdispersed Poisson
+#if p > 1, underdispersion
+doupois <- function(x, p, lambda) {
+  if(p <= (1 - exp(-lambda))^-1)
+    stop("Probability distribution not longer valid")
+  if(x == 0) {
+    (1 - p) + p*exp(-lambda)
+  } else {
+    p * ((lambda^x) * exp(-lambda))/(factorial(x))
+  }
+}
