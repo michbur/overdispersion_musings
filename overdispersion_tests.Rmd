@@ -57,8 +57,12 @@ $$
 \mu = p \lambda + p(1 - p)\lambda^2
 $$
 
-So when p=1, we have Poisson distribution.
+So when $p=1$, we have Poisson distribution.
 
+When $p > 1$, the distribution is underdispersed under condition that:
+$$
+p \leq \frac{1}{1 - \exp{(- \lambda)}}
+$$
 
 # Publications
 
