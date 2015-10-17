@@ -49,7 +49,7 @@ $$
 
 Variance:
 $$
-\mu = p \lambda + p(1 - p)\lambda^2
+\sigma^2 = p \lambda + p(1 - p)\lambda^2
 $$
 
 When $p > 1$, the distribution is underdispersed under condition that:
@@ -103,11 +103,12 @@ bias_res <- mutate(res, expected = as.numeric(as.character(k)) * value) %>%
   mutate(relbias = (est_mean - lambda)/lambda,
          bias = est_mean - lambda)
 
-ggplot(bias_res, aes(x = as.factor(lambda), fill = p, y = relbias)) +
+ggplot(bias_res, aes(x = as.factor(lambda), fill = p, y = abs(relbias))) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_x_discrete(expression(lambda)) +
   scale_y_continuous("Relative bias") +
-  ggtitle("Relative bias")
+  ggtitle("Relative bias")+
+  cool_theme
 
 ```
 
@@ -117,11 +118,12 @@ The relative bias ($\frac{\mu - \lambda}{\lambda}$) does not depend on the $\lam
 
 ```{r echo=FALSE}
 
-ggplot(bias_res, aes(x = as.factor(lambda), fill = p, y = bias)) +
+ggplot(bias_res, aes(x = as.factor(lambda), fill = p, y = abs(bias))) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_x_discrete(expression(lambda)) +
   scale_y_continuous("Bias") +
-  ggtitle("Absolute bias")
+  ggtitle("Absolute bias")+
+  cool_theme
 
 ```
 
@@ -130,5 +132,40 @@ Absolute bias is proportional to $\lambda$ and still depends on $p$.
 #Conclusions
 
 Taking into account over- and underdispersion always reduces the bias of estimated mean number of counted object per cell. Only in case of many counted objects per cell, the correction for over- and underdispersion will be visible.
+
+It's not like we did a breakthough analysis, because all that is visible from the definition of mean in this distribution. We just confirmed that:
+$$
+\mu = p \lambda
+$$
+
+But it also means that influence on the variance would be much higher. If
+$$
+\sigma^2 = p \lambda + p(1 - p)\lambda^2
+$$
+than it's easy to calculcate the bias of estimated variance.
+
+```{r echo=FALSE}
+bias_var <- data.frame(expand.grid(p = seq(0.70, 1.15, by = 0.15), lambda = 1L:8/5)) %>%
+  mutate(estm_var = p*lambda + p*(1 - p)*lambda^2) %>%
+  mutate(bias = abs(estm_var - lambda)) %>%
+  mutate(relbias = bias/lambda)
+
+ggplot(bias_var, aes(x = as.factor(lambda), fill = as.factor(p), y = relbias)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_discrete(expression(lambda)) +
+  scale_y_continuous("Variance") +
+  ggtitle("Relative variance bias")+
+  cool_theme
+
+ggplot(bias_var, aes(x = as.factor(lambda), fill = as.factor(p), y = bias)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_discrete(expression(lambda)) +
+  scale_y_continuous("Variance") +
+  ggtitle("Absolute variance bias")+
+  cool_theme
+
+```
+
+We clearly see that bias in variance is very significant, especially for low values of $\lambda$.
 
 # References
