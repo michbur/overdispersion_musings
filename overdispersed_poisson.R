@@ -49,18 +49,33 @@ doupois <- function(x, lambda, p) {
 #doupois(5, 1, 1)
 #dpois(5, 1)
 
-dens <- sapply(5L:10/10, function(single_p)
-  doupois(0L:7, 1, single_p))
-mdens <- melt(dens, varnames = c("k", "p"))
-mdens[["p"]] <- factor(mdens[["p"]], labels = 5L:10/10)
-mdens[["k"]] <- factor(mdens[["k"]], labels = 0L:7)
 
+k_vector <- 0L:7
+p_vector <- seq(0.70, 1.15, by = 0.15)
+lambda_vector <- 1L:8/5
+res <- do.call(rbind, lapply(lambda_vector, function(single_lambda) {
+  dens <- sapply(p_vector, function(single_p)
+    doupois(k_vector, single_lambda, single_p))
+  mdens <- melt(dens, varnames = c("k", "p"))
+  mdens[["p"]] <- factor(mdens[["p"]], labels = p_vector)
+  mdens[["k"]] <- factor(mdens[["k"]], labels = k_vector)
+  data.frame(lambda = single_lambda, mdens)
+})) %>% mutate(lambda_fac = as.factor(paste0("lambda = ", lambda)))
 library(ggplot2)
 
-ggplot(mdens, aes(x = k, fill = p, y = value)) +
-  geom_bar(stat = "identity", position = "dodge")
 
-mutate(mdens, expected = as.numeric(as.character(k)) * value) %>% 
-  group_by(p) %>%
+ggplot(res, aes(x = k, fill = p, y = value)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ lambda_fac, ncol = 2)
+
+bias_res <- mutate(res, expected = as.numeric(as.character(k)) * value) %>% 
+  group_by(p, lambda) %>%
   summarize(est_mean = (sum(expected))) %>%
-  mutate(bias = 1 - est_mean)
+  mutate(relbias = (est_mean - lambda)/lambda,
+         bias = est_mean - lambda)
+
+
+ggplot(bias_res, aes(x = as.factor(lambda), fill = p, y = relbias)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_discrete(expression(lambda)) +
+  scale_y_continuous("Relative bias")

@@ -1,0 +1,134 @@
+---
+title: "Bias introduced by over/underdispersion"
+author: "Michal Burdukiewicz"
+date: "17.10.2015"
+output: 
+  html_document:
+    toc: true
+bibliography: overdispersion.bib
+---
+
+```{r echo=FALSE,message=FALSE}
+library(ggplot2)
+library(reshape2)
+library(dplyr)
+
+size_mod <- -4
+cool_theme <- theme(plot.background=element_rect(fill = "transparent",
+                                                 colour = "transparent"),
+                    panel.grid.major = element_line(colour="lightgrey", linetype = "dashed"),
+                    panel.background = element_rect(fill = "white",colour = "black"),
+                    legend.background = element_rect(fill="NA"),
+                    legend.position = "right",
+                    axis.text = element_text(size=12 + size_mod),
+                    axis.title.x = element_text(size=16 + size_mod, vjust = -1), 
+                    axis.title.y = element_text(size=16 + size_mod, vjust = 1),
+                    strip.text = element_text(size=12 + size_mod, face = "bold"),
+                    strip.background = element_rect(fill="grey", colour = "black"),
+                    legend.text = element_text(size=13 + size_mod), 
+                    legend.title = element_text(size=17 + size_mod),
+                    plot.title = element_text(size=20 + size_mod))
+
+```
+
+# Distribution density definition
+$$
+P\{X = K\} = \begin{cases}
+(1 - p) + p \exp^{-\lambda},\text{if } k = 0\\
+p \frac{\lambda^k \exp^{-\lambda}}{k!},\text{if } k = 1, 2, \ldots
+\end{cases}
+$$
+as in @wang_comparison_2012.
+
+If $p = 1$, than we have normal Poisson distribution.
+
+Mean:
+$$
+\mu = p \lambda
+$$
+
+Variance:
+$$
+\mu = p \lambda + p(1 - p)\lambda^2
+$$
+
+When $p > 1$, the distribution is underdispersed under condition that:
+$$
+p \leq \frac{1}{1 - \exp{(- \lambda)}}
+$$
+
+When $p < 1$, the distribution is overdispersed.
+
+# Distribution density
+```{r echo=FALSE}
+doupois <- function(x, lambda, p) {
+  if(p > (1 - exp(-lambda))^-1)
+    stop("Probability distribution no longer valid.")
+  sapply(x, function(ith_x) {
+    if(ith_x == 0) {
+      (1 - p) + p*exp(-lambda)
+    } else {
+      p * ((lambda^ith_x) * exp(-lambda))/(factorial(ith_x))
+    }
+  })
+}
+
+k_vector <- 0L:7
+p_vector <- seq(0.70, 1.15, by = 0.15)
+lambda_vector <- 1L:8/5
+res <- do.call(rbind, lapply(lambda_vector, function(single_lambda) {
+  dens <- sapply(p_vector, function(single_p)
+    doupois(k_vector, single_lambda, single_p))
+  mdens <- melt(dens, varnames = c("k", "p"))
+  mdens[["p"]] <- factor(mdens[["p"]], labels = p_vector)
+  mdens[["k"]] <- factor(mdens[["k"]], labels = k_vector)
+  data.frame(lambda = single_lambda, mdens)
+})) %>% mutate(lambda_fac = as.factor(paste0("lambda = ", lambda)))
+
+
+ggplot(res, aes(x = k, fill = p, y = value)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ lambda_fac, ncol = 2) +
+  cool_theme
+
+```
+
+The difference between densities of distributions is small regardless of the value of $p$, but depends highly on $\lambda$. For low $\lambda$ there is almost no visible dissimilarities.
+
+
+```{r echo=FALSE}
+bias_res <- mutate(res, expected = as.numeric(as.character(k)) * value) %>% 
+  group_by(p, lambda) %>%
+  summarize(est_mean = (sum(expected))) %>%
+  mutate(relbias = (est_mean - lambda)/lambda,
+         bias = est_mean - lambda)
+
+ggplot(bias_res, aes(x = as.factor(lambda), fill = p, y = relbias)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_discrete(expression(lambda)) +
+  scale_y_continuous("Relative bias") +
+  ggtitle("Relative bias")
+
+```
+
+
+The relative bias ($\frac{\mu - \lambda}{\lambda}$) does not depend on the $\lambda$, but only on $p$.
+
+
+```{r echo=FALSE}
+
+ggplot(bias_res, aes(x = as.factor(lambda), fill = p, y = bias)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_discrete(expression(lambda)) +
+  scale_y_continuous("Bias") +
+  ggtitle("Absolute bias")
+
+```
+
+Absolute bias is proportional to $\lambda$ and still depends on $p$.
+
+#Conclusions
+
+Taking into account over- and underdispersion always reduces the bias of estimated mean number of counted object per cell. Only in case of many counted objects per cell, the correction for over- and underdispersion will be visible.
+
+# References
