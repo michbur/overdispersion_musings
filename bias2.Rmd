@@ -1,0 +1,145 @@
+---
+title: "Bias introduced by over/underdispersion - report 2"
+author: "Michal Burdukiewicz"
+date: "17.10.2015"
+output: 
+  html_document:
+    toc: true
+bibliography: overdispersion.bib
+---
+
+
+```{r echo=FALSE,message=FALSE}
+library(ggplot2)
+library(reshape2)
+library(dplyr)
+
+size_mod <- -4
+cool_theme <- theme(plot.background=element_rect(fill = "transparent",
+                                                 colour = "transparent"),
+                    panel.grid.major = element_line(colour="lightgrey", linetype = "dashed"),
+                    panel.background = element_rect(fill = "white",colour = "black"),
+                    legend.background = element_rect(fill="NA"),
+                    legend.position = "right",
+                    axis.text = element_text(size=12 + size_mod),
+                    axis.title.x = element_text(size=16 + size_mod, vjust = -1), 
+                    axis.title.y = element_text(size=16 + size_mod, vjust = 1),
+                    strip.text = element_text(size=12 + size_mod, face = "bold"),
+                    strip.background = element_rect(fill="grey", colour = "black"),
+                    legend.text = element_text(size=13 + size_mod), 
+                    legend.title = element_text(size=17 + size_mod),
+                    plot.title = element_text(size=20 + size_mod))
+
+doupois <- function(x, lambda, p) {
+  if(p > (1 - exp(-lambda))^-1)
+    stop("Probability distribution no longer valid.")
+  sapply(x, function(ith_x) {
+    if(ith_x == 0) {
+      (1 - p) + p*exp(-lambda)
+    } else {
+      p * ((lambda^ith_x) * exp(-lambda))/(factorial(ith_x))
+    }
+  })
+}
+
+```
+
+
+ouPoisson - over- and underdispersed Poisson
+
+# ouPoisson distribution
+
+This section is the same as in the first report.
+
+$$
+P\{X = K\} = \begin{cases}
+(1 - p) + p \exp^{-\lambda},\text{if } k = 0\\
+p \frac{\lambda^k \exp^{-\lambda}}{k!},\text{if } k = 1, 2, \ldots
+\end{cases}
+$$
+as in @wang_comparison_2012.
+
+$p$ - parameter of over- or underdispersion. If $p = 1$, than we have normal Poisson distribution. When $p < 1$, the distribution is overdispersed. In this case $p$ may be see as a fraction of non-zero cases that are converted to 0.
+
+When $p > 1$, the distribution is underdispersed under condition that:
+$$
+p \leq \frac{1}{1 - \exp{(- \lambda)}}
+$$
+
+Mean:
+$$
+\mu = p \lambda
+$$
+
+Variance:
+$$
+\sigma^2 = p \lambda + p(1 - p)\lambda^2
+$$
+
+# Impact on mean value
+
+Since $\mu = p \lambda$, we expect linear change (as seen on the plot below).
+
+```{r echo=FALSE}
+
+lambdas <- 1L:8/4
+ps <- 2L:23/20
+
+df <- expand.grid(lambda = lambdas, p = ps) %>%
+  mutate(emean = p * lambda, evar = p*lambda + p*(1 - p)*lambda^2, lambda_fac = as.factor(lambda),
+         p_fac = as.factor(p)) %>%
+  mutate(bias_mean = emean - lambda,
+         bias_var = p*lambda + p*(1 - p)*lambda^2 - lambda)
+
+
+
+ggplot(df, aes(x = p, colour = lambda_fac, y = emean)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  scale_x_continuous("p\n") +
+  scale_y_continuous("Estimated mean") +
+  scale_colour_discrete(expression(lambda)) +
+  ggtitle("Estimated mean in ouPoisson")+
+  cool_theme
+
+```
+
+We define bias as:
+
+$$
+Bias[\mu] = E[\mu] - \mu = p \lambda - \lambda = \lambda (p - 1)
+$$
+
+```{r echo=FALSE}
+ggplot(df, aes(x = p, colour = lambda_fac, y = bias_mean)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  geom_hline(y = 0, size = 1.2) +
+  scale_x_continuous("p\n") +
+  scale_y_continuous("Bias") +
+  scale_colour_discrete(expression(lambda)) +
+  ggtitle("Bias of mean")+
+  cool_theme
+```
+
+The bias increases along with values of $\lambda$ and $p$. For overdispersion, we underestimate the real value of $\lambda$. The situation is the opposite for underdispersion.
+
+# Impact on variance
+
+$$
+Bias[\sigma^2] = E[\sigma^2] - \sigma^2  = p \lambda + p(1 - p)\lambda^2 - \lambda = \lambda^2 p (1 - p) + \lambda(p - 1)
+$$
+
+```{r echo=FALSE}
+ggplot(df, aes(x = p, colour = lambda_fac, y = bias_var)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  geom_hline(y = 0, size = 1.2) +
+  scale_x_continuous("p\n") +
+  scale_y_continuous("Bias") +
+  scale_colour_discrete(expression(lambda)) +
+  ggtitle("Bias of variance")+
+  cool_theme
+```
+
+# References

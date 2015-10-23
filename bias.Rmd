@@ -1,5 +1,5 @@
 ---
-title: "Bias introduced by over/underdispersion"
+title: "Bias introduced by over/underdispersion - Report 1"
 author: "Michal Burdukiewicz"
 date: "17.10.2015"
 output: 
@@ -31,7 +31,9 @@ cool_theme <- theme(plot.background=element_rect(fill = "transparent",
 
 ```
 
-# Distribution density definition
+ouPoisson - over- and underdispersed Poisson
+
+# Distribution of ouPoisson
 $$
 P\{X = K\} = \begin{cases}
 (1 - p) + p \exp^{-\lambda},\text{if } k = 0\\
@@ -40,7 +42,13 @@ p \frac{\lambda^k \exp^{-\lambda}}{k!},\text{if } k = 1, 2, \ldots
 $$
 as in @wang_comparison_2012.
 
-If $p = 1$, than we have normal Poisson distribution.
+$p$ - parameter of over- or underdispersion. If $p = 1$, than we have normal Poisson distribution. When $p < 1$, the distribution is overdispersed. In this case $p$ may be see as a fraction of non-zero cases that are converted to 0.
+
+When $p > 1$, the distribution is underdispersed under condition that:
+$$
+p \leq \frac{1}{1 - \exp{(- \lambda)}}
+$$
+
 
 Mean:
 $$
@@ -52,12 +60,7 @@ $$
 \sigma^2 = p \lambda + p(1 - p)\lambda^2
 $$
 
-When $p > 1$, the distribution is underdispersed under condition that:
-$$
-p \leq \frac{1}{1 - \exp{(- \lambda)}}
-$$
 
-When $p < 1$, the distribution is overdispersed.
 
 # Distribution density
 ```{r echo=FALSE}
