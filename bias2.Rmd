@@ -47,6 +47,10 @@ doupois <- function(x, lambda, p) {
 
 ouPoisson - over- and underdispersed Poisson
 
+# Over- and underdispersion of Poisson distribution
+
+The Poisson distribution is typically use to model count data, as FOCI data. Although theoretically valid, this approach my fail for many real-life data sets, where some non-zero counts are nevertheless treated as zeroes leading to the underestimation of real variance. On the contrary, some object with zero counts might be omitted by the counting software, which leads to the partially or completely zero-truncated data. In this case we longer observe Poisson distribution and have to model the the data using alternative distributions (as negative binomial distribution) or quasi-likelihood (as Quasi-Poisson distribution).
+
 # ouPoisson distribution
 
 This section is the same as in the first report.
@@ -126,6 +130,16 @@ The bias increases along with values of $\lambda$ and $p$. For overdispersion, w
 
 # Impact on variance
 
+```{r echo=FALSE}
+ggplot(df, aes(x = p, colour = lambda_fac, y = evar)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  scale_x_continuous("p\n") +
+  scale_y_continuous("Estimated variance") +
+  scale_colour_discrete(expression(lambda)) +
+  ggtitle("Estimated variance in ouPoisson")+
+  cool_theme
+```
 $$
 Bias[\sigma^2] = E[\sigma^2] - \sigma^2  = p \lambda + p(1 - p)\lambda^2 - \lambda = \lambda^2 p (1 - p) + \lambda(p - 1)
 $$
